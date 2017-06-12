@@ -1,0 +1,74 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>知乎爬虫 v1.03</title>
+    <% if(env == 'production') {%>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.4.1/css/bulma.min.css"></link>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/turbolinks/5.0.0/turbolinks.min.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.min.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+    
+    <% } else { %>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.4.1/css/bulma.css"></link>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/turbolinks/5.0.0/turbolinks.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.js"></script>
+    <% } %>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"></link>
+      <script type="text/javascript" src="/index.js"></script>
+      <style>
+        .main-chart {
+          margin-bottom: 10px;
+        }
+
+        .example,
+        .structure {
+          border: 1px solid #ffdd57;
+          border-top-right-radius: 3px;
+          color: rgba(0, 0, 0, 0.7);
+          padding: 1.5rem;
+          position: relative;
+        }
+
+        .example:before,
+        .structure:before {
+          background: #ffdd57;
+          border-radius: 3px 3px 0 0;
+          bottom: 100%;
+          content: "Normal";
+          display: inline-block;
+          font-size: 7px;
+          font-weight: bold;
+          left: -1px;
+          letter-spacing: 1px;
+          padding: 3px 5px;
+          position: absolute;
+          text-transform: uppercase;
+          vertical-align: top;
+        }
+
+        .structure {
+          border-color: #ff3860;
+          border-radius: 3px;
+          padding: 1.5rem;
+        }
+
+        .structure:before {
+          background: #ff3860;
+          color: #fff;
+          content: "Danger";
+        }
+
+        .turbolinks-progress-bar {
+          height: 5px;
+          background-color: #ff3860;
+        }
+
+      </style>
+  </head>
+  <body>
+    <%- body %>
+  </body>
+  
+</html>

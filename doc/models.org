@@ -1,0 +1,41 @@
+* 知乎爬虫 model 字段
+
+** topic
+
+topic 存在 mongodb 中, 每天会更新并记录 follows_num.
+
+| 字段英文名    | 字段类型      | 字段中文名   | 备注     |
+| _id           | string        | 知乎话题 id  | 跳步自增 |
+| name          | string        | 话题名       |          |
+| avatar        | string        | 话题图片链接 |          |
+| desc          | string        | 话题描述     |          |
+| parent_topics | array[string] | 父话题 id    |          |
+| child_topics  | array[string] | 子话题 id    |          |
+| follows_num   | integer       | 话题关注数   | 每日记录 |
+| updated_at    | time          | 最后更新时间 |          |
+
+** topic_follows
+
+| 字段英文名  | 字段类型 | 字段中文名   | 备注 |
+| _id         | string   | 知乎话题 id  |      |
+| created_at  | time     | 创建时间     |      |
+| day         | string   | 创建日期文字 |      |
+| follows_num | integer  | 话题关注人数 |      |
+
+** question 
+
+question 存在 elasticsearch 中, 每日更新近三天的内容.
+
+| 字段英文名   | 字段类型      | 字段中文名     | 备注               |
+| title        | string        | 问题名称       |                    |
+| topics       | array[string] | 问题所属话题   | 话题格式为 话题_ID |
+| desc         | string        | 话题描述       |                    |
+| follows_num  | integer       | 关注人数       |                    |
+| views_num    | integer       | 查看人数       |                    |
+| answers_num  | integer       | 回答人数       |                    |
+| author       | string        | 题主           |                    |
+| author_token | string        | 题主 hashed_id |                    |
+| author_id    | string        | 题主 id        |                    |
+| published_at | time          | 提问时间       |                    |
+| created_at   | time          | 抓取时间       |                    |
+| updated_at   | time          | 最后更新时间   |                    |

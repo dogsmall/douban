@@ -1,0 +1,22 @@
+{
+  "name": "typhoeus",
+  "version": "1.2.3",
+  "description": "concurrent queue",
+  "main": "dist/index.js",
+  "scripts": {
+    "test:all": "mocha dist/test/*.js -t 600000",
+    "test": "mocha"
+  },
+  "keywords": [
+    "concurrent"
+  ],
+  "author": "karma",
+  "license": "ISC",
+  "dependencies": {
+    "generic-pool": "^3.1.6"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0"
+  }
+}

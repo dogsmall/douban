@@ -1,0 +1,144 @@
+<nav class="nav">
+  <div class="nav-left">
+    <a class="nav-item">
+      <img src="./logo.png" alt="Bulma logo">
+    </a>
+  </div>
+
+  <div class="nav-center">
+    <a class="nav-item" href="https://github.com/OopsData/yazc" target="_blank">
+      <span class="icon">
+        <i class="fa fa-github"></i>
+      </span>
+    </a>
+  </div>
+
+  <!-- This "nav-toggle" hamburger menu is only visible on mobile -->
+  <!-- You need JavaScript to toggle the "is-active" class on "nav-menu" -->
+  <span class="nav-toggle">
+    <span></span>
+    <span></span>
+    <span></span>
+  </span>
+
+  <!-- This "nav-menu" is hidden on mobile -->
+  <!-- Add the modifier "is-active" to display it on mobile -->
+  <div class="nav-right nav-menu">
+    <a class="nav-item" href="?type=day">
+      今日
+    </a>
+    <a class="nav-item" href="?type=week">
+      七天
+    </a>
+    <a class="nav-item" href="?type=month">
+      一月内
+    </a>
+
+    <div class="nav-item">
+      <div class="field is-grouped">
+        <p class="control">
+          <a class="button is-primary" onclick="savepic();return false;" href="javascript:void(0);" data-turbolinks="false">
+            <span class="icon">
+              <i class="fa fa-download"></i>
+            </span>
+            <span>Download</span>
+          </a>
+        </p>
+      </div>
+    </div>
+  </div>
+</nav>
+
+
+<section class="section main-chart">
+  <div class="container">
+    <canvas id="questions"></canvas>
+  </div>
+</section>
+
+<nav class="level is-mobile">
+  <div class="level-item has-text-centered">
+    <div>
+      <p class="heading">总问题数</p>
+      <p class="title"><%= questions.all %></p>
+    </div>
+  </div>
+  <div class="level-item has-text-centered">
+    <div>
+      <p class="heading">今日新增</p>
+      <p class="title"><%= questions.updated %></p>
+    </div>
+  </div>
+  <div class="level-item has-text-centered">
+    <div>
+      <p class="heading">总话题数</p>
+      <p class="title"><%= topics.all %></p>
+    </div>
+  </div>
+  <div class="level-item has-text-centered" id="active-clients">
+    <div>
+      <p class="heading">活动爬虫</p>
+      <p class="title"><%= clients.length %><% if(blocked.length > 0){ %>(<span style="color:red"><%= blocked.length %></span>)<% } %></p>
+    </div>
+  </div>
+</nav>
+
+<section class="section">
+  <div class="container">
+    <div class="columns">
+      <div class="column is-one-third">
+        <div class="example">
+          <p>增量问题进度:</p>
+          <progress class="progress" value="<%= questions.progress %>" max="100"><%= questions.progress %>%</progress>
+        </div>
+      </div>
+      
+      <div class="column is-one-third">
+        <div class="example">
+          <p>历史问题进度:</p>
+          <progress class="progress" value="<%= questions.progress %>" max="100"><%= questions.progress %>%</progress>
+        </div>
+      </div>
+      
+      <div class="column">
+        <div class="example">
+          <p>话题日刷进度:</p>
+          <progress class="progress" value="<%= topics.progress %>" max="100"><%= topics.progress %>%</progress>
+        </div>
+      </div>       
+    </div>
+  </div>
+</section>
+
+<div id="clients-modal" class="modal">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+        <% if(blocked.length > 0){ %>
+          <p class="modal-card-title">有爬虫被屏蔽</p>
+        <% } else { %>
+          <p class="modal-card-title">所有爬虫正常</p>
+        <% } %>
+      <button class="delete cm-close" ></button>
+    </header>
+    <section class="modal-card-body">
+      <ul>
+          <% for(let bc of clients) {%>
+            <% if(bc.isblocked){ %>
+              <li style="color:red"><%= bc.host %></li>
+            <% } else { %>
+              <li><%= bc.host %></li>
+            <% } %>
+          <% } %>
+      </ul>
+    </section>
+    <footer class="modal-card-foot">
+      <a class="button cm-close" >Close</a>
+    </footer>
+  </div>
+</div>
+
+
+<script>
+  window.aggs = <%- JSON.stringify(aggs) %>
+</script>
