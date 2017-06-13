@@ -5,7 +5,7 @@ import { split, pick } from "lodash"
 import * as Epona from "eponajs"
 var schedule = require('node-schedule');
 global.btmsg = 'normal'
-    // heartbeat()
+// heartbeat()
 
 function minutes(n) {
     return 1000 * 60 * n
@@ -43,29 +43,32 @@ async function dispatch(crawler) {
     let index = await crawler.getId()
     console.log(index)
     if (index === 'nil' || index === null) { crawlAllCompleted("rank-redis") }
-    await crawler.crawl(index)
-        .then(async function(ret) {
-            if (await crawler.save(ret)) {
-                // console.log("sss")
-                await crawler.crawlCompleted(index)
-            } else {
-                console.log(`crawl ${index} error`)
-                await crawler.requeue(index)
-            }
-            setImmediate(dispatch, crawler)
-        })
-        .catch(async function(err) {
-            if (await error(err) || await crawler.error(err)) {
-                console.log("error but catched, retry now!")
-                await crawler.requeue(index)
+    else {
+        await crawler.crawl(index)
+            .then(async function (ret) {
+                if (await crawler.save(ret)) {
+                    // console.log("sss")
+                    await crawler.crawlCompleted(index)
+                } else {
+                    console.log(`crawl ${index} error`)
+                    await crawler.requeue(index)
+                }
                 setImmediate(dispatch, crawler)
-            } else {
-                console.log(new Date())
-                console.log("undefined error type; exit & please concact qiyang")
-                console.log(error)
-                process.exit(1)
-            }
-        })
+            })
+            .catch(async function (err) {
+                if (await error(err) || await crawler.error(err)) {
+                    console.log("error but catched, retry now!")
+                    await crawler.requeue(index)
+                    setImmediate(dispatch, crawler)
+                } else {
+                    console.log(new Date())
+                    console.log("undefined error type; exit & please concact qiyang")
+                    console.log(error)
+                    process.exit(1)
+                }
+            })
+    }
+
 }
 
 function usage() {
@@ -79,7 +82,7 @@ async function run(name, inc = false) {
     let crawler = require(`./douban/${file}`)[mod || 'default']
     if (inc) {
         console.log("重头开始,读取film里的剧目放到redis", new Date())
-        var j = schedule.scheduleJob('* 8 * * *', async function() {
+        var j = schedule.scheduleJob('* 8 * * *', async function () {
             console.log('每天8点开始执行');
             try {
                 let films = await crawler.getIds()
