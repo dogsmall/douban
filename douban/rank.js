@@ -26,34 +26,6 @@ function today() {
     return beginningOfDay(new Date)
 }
 
-// module.exports.mongo = {
-//     async getId() {
-//         let films = await Films.findOneAndUpdate({ doubanId: { $exists: true }, isDeleted: false, showType: -1, updatedAt: { $ } }, { $set: { pending: true, updatedAt: new Date } }, { sort: { updated_at: 1 } })
-//         return [films.value]
-//     },
-//     requeue(index) {
-//         return true
-//     },
-//     crawlCompleted(film) {
-//         return Films.updateOne({ _id: film._id }, { $set: omit(film, '_id') })
-//     },
-//     save(film) {
-//         // return topics
-//         let saved = []
-//         saved.push(Films.updateOne({ _id: film._id }, { $set: omit(film, ['_id', 'created_at']) }))
-//         saved.push(FilmsFollows.insertOne({
-//             _id: (new ObjectID).str,
-//             douban_id: douban._id,
-//             rank: film.rank,
-//             rankCount: film.rankCount,
-//             comments: film.comments,
-//             reviews: film.reviews,
-//             created_at: new Date
-//         }))
-//         return Promise.all(saved)
-//     }
-// }
-
 module.exports.redis = {
     async getIds() {
         let films = await Films.find({ doubanId: { $exists: true }, isDeleted: false, showType: -1 }, { doubanId: 1, _id: 0 }).toArray()

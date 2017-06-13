@@ -5,7 +5,6 @@ import { heartbeat } from "./zhihu/heartbeat"
 import * as Epona from "eponajs"
 global.btmsg = 'normal'
 heartbeat()
-const DOUBAN = 'questions'
 
 function minutes(n) {
     return 1000 * 60 * n
@@ -19,7 +18,7 @@ let lasttest = new Date(new Date - minutes(5))
 async function isblocked() {
     if (new Date - lasttest < minutes(3)) { return false }
     lasttest = new Date
-    let title = await Epona.get("https://movie.douban.com/subject/26850627", 'h1.zm-editable-content')
+    let title = await Epona.get("https://movie.douban.com/subject/26850627", 'body > a')
     if (title == "人工智能") {
         global.btmsg = 'normal'
         return false
