@@ -79,7 +79,7 @@ async function run(name, inc = false) {
     let crawler = require(`./douban/${file}`)[mod || 'default']
     if (inc) {
         console.log("重头开始,读取film里的剧目放到redis", new Date())
-        var j = schedule.scheduleJob('* 8 * * *', function() {
+        var j = schedule.scheduleJob('* 8 * * *', async function() {
             console.log('每天8点开始执行');
             try {
                 let films = await crawler.getIds()
