@@ -80,7 +80,7 @@ module.exports.redis = {
 
     ,
     requeue(index) {
-        return redis.lpushAsync('douban.ids', updateId(index))
+        return redis.lpushAsync('douban.ids', index)
     }
 
     ,

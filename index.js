@@ -95,7 +95,7 @@ filmMongo.then(x => {
     global.filmMongo = x
     mongo.then(s => {
         global.mongo = s
-        run(process.argv[2] || QUESTION, process.argv[3] || false)
+        run(process.argv[2], process.argv[3] || false)
     }).catch(x => {
         console.log(x)
     })
