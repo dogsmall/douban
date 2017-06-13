@@ -84,19 +84,12 @@ module.exports.redis = {
     }
 
     ,
-    crawl(index) {
-        return crawl(index)
+    async crawl(index) {
+        return await crawl.start(index)
     },
     async save(rankFollows) {
-        // console.log(rankFollows)
         rankFollows.created_at = new Date
         let rdoubanRank = rankFollows
-            // .filter(x => x.doubanId)
-            //     .map(x => {
-            //         x.created_at = new Date
-            //         return x
-            //     })
-        console.log(rdoubanRank)
         let saved = await FilmsFollows.insertOne(rdoubanRank, { ordered: false })
         return saved.result.ok == 1
     }

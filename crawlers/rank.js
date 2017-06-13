@@ -1,17 +1,25 @@
 import * as Epona from "eponajs"
 
-export default function(douban_id) {
-    let doubanUrls = {
-            default: { doubanId: douban_id },
-            url: `https://movie.douban.com/subject/${douban_id}`
-        }
-        // if (topicUrls.length == 1) { topicUrls = topicUrls[0] }
-    return Epona.get(doubanUrls, {
+let epona = Epona.new({ rateLimit: 10000 })
+
+
+epona.on('https://movie.douban.com/subject/{doubanId}', {
         rank: "#interest_sectl strong[property='v:average']::text()",
         rankCount: "div.rating_sum > a > span[property='v:votes']::text()",
         comments: "#comments-section > div.mod-hd > h2 > span > a::text()| numbers",
         reviews: "section > header > h2 > span > a::text()|numbers",
-    }, {
-        rateLimit: 7000
     })
+    .then(async function(ret) {
+        console.log('抓到的数据：', ret)
+        return ret
+    })
+
+epona.start = function(douban_id) {
+    let doubanUrls = {
+        default: { doubanId: douban_id },
+        url: `https://movie.douban.com/subject/${douban_id}`
+    }
+    return epona.queue(doubanUrls)
 }
+
+export default epona

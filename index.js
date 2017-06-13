@@ -45,7 +45,6 @@ async function dispatch(crawler) {
     if (index === 'nil' || index === null) { process.exit(1) }
     await crawler.crawl(index)
         .then(async function(ret) {
-            console.log(ret)
             if (await crawler.save(ret)) {
                 // console.log("sss")
                 await crawler.crawlCompleted(index)
@@ -86,6 +85,8 @@ async function run(name, inc) {
         } catch (e) {
             console.log(e)
         }
+    } else {
+        console.log("从上次开始")
     }
 
     dispatch(crawler)
