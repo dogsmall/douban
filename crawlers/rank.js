@@ -10,6 +10,7 @@ epona.on('https://movie.douban.com/subject/{doubanId}', {
         reviews: "section > header > h2 > span > a::text()|numbers",
     })
     .then(async function(ret) {
+        ret.created_at = new Date
         console.log('抓到的数据：', ret)
         return ret
     })
