@@ -85,7 +85,7 @@ async function run(name, inc = false) {
         rule.minute = 0;
         rule.second = 0;
         console.log("重头开始,读取film里的剧目放到redis", new Date())
-        let j = schedule.scheduleJob(rule, function() {
+        let j = schedule.scheduleJob(rule, async function() {
             console.log('每天8点开始执行');
             console.log(new Date)
             try {
