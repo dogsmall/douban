@@ -5,7 +5,7 @@ import { split, pick } from "lodash"
 import * as Epona from "eponajs"
 var schedule = require('node-schedule');
 global.btmsg = 'normal'
-// heartbeat()
+    // heartbeat()
 
 function minutes(n) {
     return 1000 * 60 * n
@@ -42,10 +42,9 @@ async function dispatch(crawler) {
     }
     let index = await crawler.getId()
     console.log(index)
-    if (index === 'nil' || index === null) { crawlAllCompleted("rank-redis") }
-    else {
+    if (index === 'nil' || index === null) { crawlAllCompleted("rank-redis") } else {
         await crawler.crawl(index)
-            .then(async function (ret) {
+            .then(async function(ret) {
                 if (await crawler.save(ret)) {
                     // console.log("sss")
                     await crawler.crawlCompleted(index)
@@ -55,7 +54,7 @@ async function dispatch(crawler) {
                 }
                 setImmediate(dispatch, crawler)
             })
-            .catch(async function (err) {
+            .catch(async function(err) {
                 if (await error(err) || await crawler.error(err)) {
                     console.log("error but catched, retry now!")
                     await crawler.requeue(index)
@@ -81,9 +80,14 @@ async function run(name, inc = false) {
     let [file, mod] = name.split('-')
     let crawler = require(`./douban/${file}`)[mod || 'default']
     if (inc) {
+        let rule = new schedule.RecurrenceRule();
+        rule.hour = 8;
+        rule.minute = 0;
+        rule.second = 0;
         console.log("重头开始,读取film里的剧目放到redis", new Date())
-        var j = schedule.scheduleJob('* 8 * * *', async function () {
+        let j = schedule.scheduleJob(rule, function() {
             console.log('每天8点开始执行');
+            console.log(new Date)
             try {
                 let films = await crawler.getIds()
                 let redisRes = await crawler.saveRedis(films)
@@ -91,6 +95,7 @@ async function run(name, inc = false) {
                 console.log(e)
             }
         });
+
     } else {
         console.log("从上次开始")
         dispatch(crawler)
