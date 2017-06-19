@@ -1,10 +1,11 @@
 import { redis, es, config, bulk } from "../_base"
 import { pick, omit } from "lodash"
 import { updateId, log, expandIds } from "./utils"
-import crawl from "../crawlers/rank"
+import crawl from "../crawlers/comments"
 import { ObjectID } from "mongodb"
 let Films = global.filmMongo.collection('idatage_films')
-let FilmsFollows = global.mongo.collection('douban_follows')
+let FilmsComments = global.mongo.collection('douban_comments')
+
 
 function beginningOfDay(date) {
     date = date || new Date
@@ -34,32 +35,32 @@ module.exports.redis = {
     saveRedis(films) {
         console.log(films)
         films.map(x => {
-            return redis.lpushAsync('douban.ids', x.doubanId)
+            return redis.lpushAsync('douban.comment_filmId', x.doubanId)
         })
     },
 
     getId() {
-        return redis.rpoplpushAsync('douban.ids', 'douban.ids.pending')
+        return redis.rpoplpushAsync('douban.comment_filmId', 'douban.comment_filmId.pending')
     }
 
     ,
     crawlCompleted(index) {
         return redis.multi()
-            .lpush('douban.ids.completed', updateId(index))
-            .lrem('douban.ids.pending', 0, index)
+            .lpush('douban.comment_filmId.completed', updateId(index))
+            .lrem('douban.comment_filmId.pending', 0, index)
             .execAsync()
     }
 
     ,
     requeue(index) {
-        return redis.lpushAsync('douban.ids', index)
+        return redis.lpushAsync('douban.comment_filmId', index)
     }
 
     ,
     async crawl(index) {
         return await crawl.start(index)
     },
-    async save(rankFollows) {
+    async save(comments) {
         rankFollows.created_at = today()
         let rdoubanRank = rankFollows
         let saved = await FilmsFollows.insertOne(rdoubanRank, { ordered: false })
