@@ -45,6 +45,7 @@ module.exports.redis = {
 
     ,
     crawlCompleted(index) {
+        console.log(`${index}的短评已经爬完`)
         return redis.multi()
             .lpush('douban.comment_filmId.completed', updateId(index))
             .lrem('douban.comment_filmId.pending', 0, index)
@@ -59,13 +60,15 @@ module.exports.redis = {
     ,
     async crawl(index) {
         let res = await crawl.start(index)
+        console.log(res)
+        return res
     },
     async save(comments) {
         console.log(`准备存入${comments.length}条短评`)
         comments.map(async function(x) {
             try {
-                let saved = await FilmsComments.findOneAndUpdate({ comment_id: x.comment_id, avatarId: x.avatarId }, { $set: x }, { sort: { doubanId: 1 } })
-
+                let result = await FilmsComments.findOneAndUpdate({ commentId: x.commentId, avatarId: x.avatarId }, { $set: x }, { sort: { doubanId: 1 } })
+                console.log(result.ok)
             } catch (error) {
                 console.log(`保存数据是报错:${error}`)
             }

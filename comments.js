@@ -12,7 +12,7 @@ function minutes(n) {
 }
 
 function crawlAllCompleted(name) {
-    console.log("爬完一次，等待一个小时再次尝试")
+    console.log("爬完一次，下次")
     setTimeout(run, minutes(60), name)
 }
 let lasttest = new Date(new Date - minutes(30))
@@ -34,27 +34,32 @@ function error(err) {
     return false
 }
 
-function commment_url(douban_id) {
+function comment_url(douban_id) {
     return {
         default: { doubanId: douban_id },
         url: `https://movie.douban.com/subject/${douban_id}/comments`
     }
+    // return {
+    //     default: { doubanId: '26235195' },
+    //     url: 'https://movie.douban.com/subject/26235195/comments'
+    // }
 }
 
 async function _crawl(crawler, url, index) {
     await crawler.crawl(url)
         .then(async function(res) {
+            // console.log(res)
             if (Array.isArray(res)) {
                 await crawler.save(res)
                 crawler.crawlCompleted(index)
                 setImmediate(dispatch, crawler)
             } else {
-                await crawler.save(res)
-                _crawl(crawler, res.pageNext, index)
+                await crawler.save(res.comments)
+                _crawl(crawler, res.next, index)
             }
         })
         .catch(async function(err) {
-            if (await error(err) || await crawler.error(err)) {
+            if (await error(err)) {
                 console.log("error but catched, retry now!")
                 await crawler.requeue(index)
                 setImmediate(dispatch, crawler)
@@ -75,24 +80,9 @@ async function dispatch(crawler) {
     }
     let index = await crawler.getId()
     console.log(index)
-    if (index === 'nil' || index === null) { crawlAllCompleted("comments-redis") } else {
-        let url = commment_url(index)
-        _crawl(crawler, url)
-        await crawler.crawl(index)
-            .then(async function(ret) {
-                console.log(ret)
-                await crawler.save(ret)
-                if (ret.next) {
-                    await crawler.hasNext(ret.next)
-                } else {
-                    console.log(`crawl ${index} error`)
-                    await crawler.requeue(index)
-                }
-
-            })
-
-    }
-
+    if (index === 'nil' || index === null) { crawlAllCompleted("comments-redis") }
+    let url = comment_url(index)
+    _crawl(crawler, url, index)
 }
 
 function usage() {
@@ -114,7 +104,7 @@ async function run(name, inc = false) {
 
     } else {
         console.log("从上次开始")
-        dispatch(crawler, commment_url)
+        dispatch(crawler, comment_url)
     }
 
 

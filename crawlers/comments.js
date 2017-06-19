@@ -1,6 +1,6 @@
 import * as Epona from "eponajs"
 import { last, compact } from "lodash"
-let epona = Epona.new({ rateLimit: 10000 })
+let epona = Epona.new({ rateLimit: 7000 })
 
 
 epona.on('https://movie.douban.com/subject/{doubanId}/comments', {
@@ -11,31 +11,36 @@ epona.on('https://movie.douban.com/subject/{doubanId}/comments', {
                 avatar: ".avatar a::title", // as '.reply .avatar'
                 avatarId: ".avatar a::href",
                 comment: ".comment>p::text()|trim",
-                comment_vote: ".comment .comment-vote .votes::text()|numbers",
-                comment_id: ".comment .comment-vote input::value|numbers",
-                comment_time: ".comment .comment-info .comment-time ::title",
-                comment_rating: ".comment .comment-info .rating::title"
+                commentVote: ".comment .comment-vote .votes::text()|numbers",
+                commentId: ".comment .comment-vote input::value|numbers",
+                commentTime: ".comment .comment-info .comment-time ::title",
+                commentRating: ".comment .comment-info .rating::title"
             }
         },
         nextPage: ".next::href|trim"
     })
+    .host("movie.douban.com")
     .then(async function(ret) {
-        // console.log('抓到的数据：', ret)
+
+        // console.log(`url等于${url}`)
+        // console.log(ret)
         ret.comments.map(x => {
             x.avatarId = last(compact(x.avatarId.split('/')))
             x.doubanId = ret.doubanId
             x.created_at = new Date
             return x
         })
-        console.log(ret)
+        console.log(`抓取到${ret.comments.length}条短评`)
         if (ret.nextPage) {
-            return {
+            let nextUrl = {
                 comments: ret.comments,
                 next: {
-                    url: `https://movie.douban.com/subject/${ret.doubanId}/comments${ret.nextPage}`,
-                    default: { doubanId: ret.doubanId }
+                    headers: { 'Upgrade-Insecure-Requests': "1", "Referer": `https://movie.douban.com/subject/${ret.doubanId}/comments` },
+                    default: { doubanId: ret.doubanId },
+                    url: `https://movie.douban.com/subject/${ret.doubanId}/comments${ret.nextPage} `
                 }
             }
+            return nextUrl
 
         } else {
             return ret.comments
@@ -43,13 +48,9 @@ epona.on('https://movie.douban.com/subject/{doubanId}/comments', {
 
     })
 
-epona.start = function(douban_id) {
+epona.start = function(commentUrl) {
+    console.log(commentUrl)
+    return epona.queue(commentUrl)
+}
 
-        return epona.queue(doubanUrls)
-    }
-    // epona.hasNext = function(url) {
-    //     return epona.queue(url)
-    // }
-epona.start("26260853")
-
-// export default epona
+export default epona
