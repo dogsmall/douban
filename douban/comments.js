@@ -65,13 +65,18 @@ module.exports.redis = {
     },
     async save(comments) {
         console.log(`准备存入${comments.length}条短评`)
-        comments.map(async function(x) {
-            try {
-                let result = await FilmsComments.findOneAndUpdate({ commentId: x.commentId, avatarId: x.avatarId }, { $set: x }, { sort: { doubanId: 1 } })
-                    // console.log(result.ok)
-            } catch (error) {
-                console.log(`保存数据是报错:${error}`)
-            }
-        })
+        if (comments.length >= 1) {
+            comments.map(async function(x) {
+                try {
+                    let result = await FilmsComments.findOneAndUpdate({ commentId: x.commentId, avatarId: x.avatarId }, { $set: x }, { sort: { doubanId: 1 } })
+                        // console.log(result.ok)
+                } catch (error) {
+                    console.log(`保存数据是报错:${error}`)
+                }
+            })
+        } else {
+            console.log("没有存入任何短评，切换剧目")
+        }
+
     }
 }
