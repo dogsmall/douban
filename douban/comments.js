@@ -58,12 +58,17 @@ module.exports.redis = {
 
     ,
     async crawl(index) {
-        return await crawl.start(index)
+        let res = await crawl.start(index)
     },
     async save(comments) {
-        rankFollows.created_at = today()
-        let rdoubanRank = rankFollows
-        let saved = await FilmsFollows.insertOne(rdoubanRank, { ordered: false })
-        return saved.result.ok == 1
+        console.log(`准备存入${comments.length}条短评`)
+        comments.map(async function(x) {
+            try {
+                let saved = await FilmsComments.findOneAndUpdate({ comment_id: x.comment_id, avatarId: x.avatarId }, { $set: x }, { sort: { doubanId: 1 } })
+
+            } catch (error) {
+                console.log(`保存数据是报错:${error}`)
+            }
+        })
     }
 }
