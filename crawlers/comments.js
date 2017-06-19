@@ -3,7 +3,7 @@ import { last, compact } from "lodash"
 let epona = Epona.new({ rateLimit: 7000 })
 
 
-epona.on('https://movie.douban.com/subject/{doubanId}/comments', {
+epona.on('subject/{doubanId}/comments', {
         comments: {
             sels: ".comment-item *" // use ' *' to get all replies as Array
                 ,
@@ -21,9 +21,6 @@ epona.on('https://movie.douban.com/subject/{doubanId}/comments', {
     })
     .host("movie.douban.com")
     .then(async function(ret) {
-
-        // console.log(`url等于${url}`)
-        // console.log(ret)
         ret.comments.map(x => {
             x.avatarId = last(compact(x.avatarId.split('/')))
             x.doubanId = ret.doubanId
@@ -31,11 +28,11 @@ epona.on('https://movie.douban.com/subject/{doubanId}/comments', {
             return x
         })
         console.log(`抓取到${ret.comments.length}条短评`)
-        if (ret.nextPage) {
+        if (ret.nextPage && ret.comments.length >= 20) {
             let nextUrl = {
                 comments: ret.comments,
                 next: {
-                    headers: { 'Upgrade-Insecure-Requests': "1", "Referer": `https://movie.douban.com/subject/${ret.doubanId}/comments` },
+                    // headers: { 'Upgrade-Insecure-Requests': "1", "Referer": `https://movie.douban.com/subject/${ret.doubanId}/comments` },
                     default: { doubanId: ret.doubanId },
                     url: `https://movie.douban.com/subject/${ret.doubanId}/comments${ret.nextPage} `
                 }

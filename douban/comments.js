@@ -60,7 +60,7 @@ module.exports.redis = {
     ,
     async crawl(index) {
         let res = await crawl.start(index)
-        console.log(res)
+            // console.log(res)
         return res
     },
     async save(comments) {
@@ -68,7 +68,7 @@ module.exports.redis = {
         comments.map(async function(x) {
             try {
                 let result = await FilmsComments.findOneAndUpdate({ commentId: x.commentId, avatarId: x.avatarId }, { $set: x }, { sort: { doubanId: 1 } })
-                console.log(result.ok)
+                    // console.log(result.ok)
             } catch (error) {
                 console.log(`保存数据是报错:${error}`)
             }
