@@ -1,10 +1,11 @@
 function beginningOfDay(date) {
-    date = date || new Date
+    date = date || new Date()
     date.setHours(0)
     date.setMinutes(0)
     date.setSeconds(0)
     date.setMilliseconds(0)
     date.setUTCHours(0)
+        // date = new Date(3600 * 24 * 1000)
     return date
 }
 
@@ -15,7 +16,9 @@ function yestoday() {
 }
 
 function today() {
-    return beginningOfDay(new Date)
+    let date = new Date
+    date.setDate(date.getDate())
+    return beginningOfDay(date)
 }
 
 function gap(day1, day2) {
@@ -29,4 +32,8 @@ function timeRange(day1, day2) {
 }
 
 let s = timeRange(today(), yestoday())
-console.log(s / 1000 / 60 / 60 / 24)
+    // console.log(s / 1000 / 60 / 60 / 24)
+console.log(beginningOfDay())
+console.log(new Date)
+console.log(today())
+console.log(yestoday())

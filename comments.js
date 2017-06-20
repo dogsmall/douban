@@ -1,5 +1,5 @@
 // https://www.zhihu.com/topic/19668741/newest
-import { redis, es, config, mongo, filmMongo } from "./_base"
+import { redis, es, config, mongo } from "./_base"
 import { split, pick } from "lodash"
 // import { heartbeat } from "./zhihu/heartbeat"
 import * as Epona from "eponajs"
@@ -12,8 +12,8 @@ function minutes(n) {
 }
 
 function crawlAllCompleted(name) {
-    console.log("爬完一次，下次")
-    setTimeout(run, minutes(60), name)
+    console.log("爬完一次")
+    process.exit(0)
 }
 let lasttest = new Date(new Date - minutes(30))
 async function isblocked() {
@@ -39,8 +39,9 @@ function comment_url(douban_id) {
         default: { doubanId: douban_id, commentType: "hot" },
         url: `https://movie.douban.com/subject/${douban_id}/comments`
     }
-    // default: { doubanId: '26003812' },
-    // url: 'https://movie.douban.com/subject/26003812/comments?start=191&amp;limit=20&amp;sort=new_score&amp;status=P '
+    // return {
+    //     default: { doubanId: '26761344', commentType: 'hot' },
+    //     url: 'https://movie.douban.com/subject/25765735/comments?sort=time&status=P'
     // }
 }
 
@@ -54,7 +55,7 @@ async function _crawl(crawler, url, index) {
                 setImmediate(dispatch, crawler)
             } else {
                 await crawler.save(res.comments)
-                _crawl(crawler, res.next, index)
+                await _crawl(crawler, res.next, index)
             }
         })
         .catch(async function(err) {
@@ -79,9 +80,9 @@ async function dispatch(crawler) {
     }
     let index = await crawler.getId()
     console.log(index)
-    if (index === 'nil' || index === null) { crawlAllCompleted("comments-redis") }
+    if (index === 'nil' || index === null) { crawlAllCompleted() }
     let url = comment_url(index)
-    _crawl(crawler, url, index)
+    await _crawl(crawler, url, index)
 }
 
 function usage() {
@@ -108,14 +109,9 @@ async function run(name, inc = false) {
 
 
 }
-filmMongo.then(x => {
-    global.filmMongo = x
-    mongo.then(s => {
-        global.mongo = s
-        run(process.argv[2], process.argv[3] || false)
-    }).catch(x => {
-        console.log(x)
-    })
+mongo.then(s => {
+    global.mongo = s
+    run(process.argv[2], process.argv[3] || false)
 }).catch(x => {
     console.log(x)
 })

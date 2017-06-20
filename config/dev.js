@@ -13,4 +13,4 @@ export const esOpts = {
 }
 
 export const mongoUrl = "mongodb://127.0.0.1:27017/douban"
-export const filmMongoUrl = "mongodb://normal:Joke123@ant09.idatage.com:27021/tarantula"
+    // export const filmMongoUrl = "mongodb://normal:Joke123@ant09.idatage.com:27021/tarantula"
