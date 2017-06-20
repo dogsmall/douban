@@ -69,32 +69,39 @@ module.exports.redis = {
     },
     async save(rankFollows) {
         rankFollows.crawled_at = today()
-        let lastObj = (await TopicStat.find({ doubanId: rankFollows.doubanId, crawled_at: { $lt: rankFollows.crawled_at } }).sort({ crawled_at: -1 }).limit(1)).pop()
-        let timeRange = (new Date(rankFollows.crawled_at) - new Date(lastObj.crawled_at)) / 1000 / 60 / 60 / 24
-        console.log(timeRange)
-        if (timeRange > 1) {
-            console.log(`需要补数据，数据缺失${timeRange-1}`)
-            let rankRange = rankFollows.rank - lastObj.rank
-            let rankCountRange = rankFollows.rankCount - lastObj.rankCount
-            let commentsRange = rankFollows.comments - lastObj.comments
-            let reviewsRange = rankFollows.reviews - lastObj.reviews
-            for (let i = 1; i < timeRange; i++) {
-                let obj = {
-                    rank: floor(rankFollows.rank - rankRange / timeRange * i, 1),
-                    rankCount: parseInt(rankFollows.rankCount - rankCountRange / timeRange * i),
-                    comments: parseInt(rankFollows.comments - commentsRange / timeRange * i),
-                    reviews: parseInt(rankFollows.reviews - reviewsRange / timeRange * i),
-                    crawled_at: lastday(i)
+        console.log(rankFollows)
+        if (await FilmsFollows.find({ doubanId: rankFollows.doubanId }).sort({ crawled_at: -1 }).limit(1).toArray().lenth > 0) {
+            let lastObj = await FilmsFollows.find({ doubanId: rankFollows.doubanId }).sort({ crawled_at: -1 }).limit(1).toArray()
+            let lastOne = lastObj[0]
+            let timeRange = (new Date(rankFollows.crawled_at) - new Date(lastOne.crawled_at)) / 1000 / 60 / 60 / 24
+            console.log(timeRange)
+            if (timeRange > 1) {
+                console.log(`需要补数据，数据缺失${timeRange-1}`)
+                let rankRange = rankFollows.rank - lastObj.rank
+                let rankCountRange = rankFollows.rankCount - lastObj.rankCount
+                let commentsRange = rankFollows.comments - lastObj.comments
+                let reviewsRange = rankFollows.reviews - lastObj.reviews
+                for (let i = 1; i < timeRange; i++) {
+                    let obj = {
+                        rank: floor(rankFollows.rank - rankRange / timeRange * i, 1),
+                        rankCount: parseInt(rankFollows.rankCount - rankCountRange / timeRange * i),
+                        comments: parseInt(rankFollows.comments - commentsRange / timeRange * i),
+                        reviews: parseInt(rankFollows.reviews - reviewsRange / timeRange * i),
+                        doubanId: rankFollows.doubanId,
+                        crawled_at: lastday(i)
+                    }
+                    let saved = await FilmsFollows.insertOne(obj, { ordered: false })
+                    console.log(saved.result.ok)
                 }
-                let saved = await FilmsFollows.insertOne(obj, { ordered: false })
-                console.log(saved.result.ok)
-            }
 
+            }
         }
+
         // rank
         // rankCount
         // comments
         // reviews
+        // doubanId
         let rdoubanRank = rankFollows
         let saved = await FilmsFollows.insertOne(rdoubanRank, { ordered: false })
         return saved.result.ok == 1

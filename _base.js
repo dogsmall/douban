@@ -46,4 +46,4 @@ export async function bulk(bulkBody) {
     return false
 }
 export let mongo = MongoClient.connect(config.mongoUrl)
-    // export let filmMongo = MongoClient.connect(config.filmMongoUrl)
+export let filmMongo = MongoClient.connect(config.filmMongoUrl)

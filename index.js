@@ -41,6 +41,7 @@ async function dispatch(crawler) {
         return
     }
     let index = await crawler.getId()
+        // let index = "26415259"
     console.log(index)
     if (index === 'nil' || index === null) { crawlAllCompleted("rank-redis") } else {
         await crawler.crawl(index)
