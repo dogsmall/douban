@@ -81,10 +81,10 @@ module.exports.redis = {
             let reviewsRange = rankFollows.reviews - lastObj.reviews
             for (let i = 1; i < timeRange; i++) {
                 let obj = {
-                    rank: rankFollows.rank - rankRange / timeRange * i,
-                    rankCount: rankFollows.rankCount - rankCountRange / timeRange * i,
-                    comments: rankFollows.comments - commentsRange / timeRange * i,
-                    reviews: rankFollows.reviews - reviewsRange / timeRange * i,
+                    rank: parseFloat(rankFollows.rank - rankRange / timeRange * i),
+                    rankCount: parseInt(rankFollows.rankCount - rankCountRange / timeRange * i),
+                    comments: parseInt(rankFollows.comments - commentsRange / timeRange * i),
+                    reviews: parseInt(rankFollows.reviews - reviewsRange / timeRange * i),
                     crawled_at: lastday(i)
                 }
                 let saved = await FilmsFollows.insertOne(obj, { ordered: false })
