@@ -1,5 +1,5 @@
 import { redis, es, config, bulk } from "../_base"
-import { pick, omit } from "lodash"
+import { pick, omit, floor } from "lodash"
 import { updateId, log, expandIds } from "./utils"
 import crawl from "../crawlers/rank"
 import { ObjectID } from "mongodb"
@@ -81,7 +81,7 @@ module.exports.redis = {
             let reviewsRange = rankFollows.reviews - lastObj.reviews
             for (let i = 1; i < timeRange; i++) {
                 let obj = {
-                    rank: parseFloat(rankFollows.rank - rankRange / timeRange * i),
+                    rank: floor(rankFollows.rank - rankRange / timeRange * i, 1),
                     rankCount: parseInt(rankFollows.rankCount - rankCountRange / timeRange * i),
                     comments: parseInt(rankFollows.comments - commentsRange / timeRange * i),
                     reviews: parseInt(rankFollows.reviews - reviewsRange / timeRange * i),
