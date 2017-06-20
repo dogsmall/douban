@@ -69,12 +69,18 @@ module.exports.redis = {
     },
     async save(rankFollows) {
         rankFollows.crawled_at = today()
+            // let s = await FilmsFollows.find({ doubanId: rankFollows.doubanId, crawled_at: { $lt: rankFollows.crawled_at } }).sort({ crawled_at: -1 }).limit(1).toArray().length
+            // console.log(s)
         console.log(rankFollows)
-        if (await FilmsFollows.find({ doubanId: rankFollows.doubanId }).sort({ crawled_at: -1 }).limit(1).toArray().lenth > 0) {
+        if (await FilmsFollows.find({ doubanId: rankFollows.doubanId, crawled_at: { $lt: rankFollows.crawled_at } }).sort({ crawled_at: -1 }).limit(1).toArray().length > 0) {
+
             let lastObj = await FilmsFollows.find({ doubanId: rankFollows.doubanId }).sort({ crawled_at: -1 }).limit(1).toArray()
+
+            console.log(`以前的数组：${lastObj}`)
             let lastOne = lastObj[0]
+            console.log(`上一个评价${lastOne}`)
             let timeRange = (new Date(rankFollows.crawled_at) - new Date(lastOne.crawled_at)) / 1000 / 60 / 60 / 24
-            console.log(timeRange)
+            console.log(`日期相隔${timeRange}天`)
             if (timeRange > 1) {
                 console.log(`需要补数据，数据缺失${timeRange-1}`)
                 let rankRange = rankFollows.rank - lastObj.rank
@@ -96,12 +102,6 @@ module.exports.redis = {
 
             }
         }
-
-        // rank
-        // rankCount
-        // comments
-        // reviews
-        // doubanId
         let rdoubanRank = rankFollows
         let saved = await FilmsFollows.insertOne(rdoubanRank, { ordered: false })
         return saved.result.ok == 1
