@@ -58,9 +58,7 @@ module.exports.redis = {
     ,
     requeue(index) {
         return redis.lpushAsync('douban.ids', index)
-    }
-
-    ,
+    },
     error(err) {
 
         return true
@@ -75,6 +73,7 @@ module.exports.redis = {
         let timeRange = (new Date(rankFollows.crawled_at) - new Date(lastObj.crawled_at)) / 1000 / 60 / 60 / 24
         console.log(timeRange)
         if (timeRange > 1) {
+            console.log(`需要补数据，数据缺失${timeRange-1}`)
             let rankRange = rankFollows.rank - lastObj.rank
             let rankCountRange = rankFollows.rankCount - lastObj.rankCount
             let commentsRange = rankFollows.comments - lastObj.comments
