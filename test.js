@@ -21,4 +21,12 @@ function today() {
 function gap(day1, day2) {
     return parseInt((day1.getTime() - day2.getTime()) / 1000 / 60 / 60 / 24)
 }
-console.log(gap(today(), yestoday()))
+// console.log(gap(today(), yestoday()))
+
+
+function timeRange(day1, day2) {
+    return new Date(day1) - new Date(day2)
+}
+
+let s = timeRange(today(), yestoday())
+console.log(s / 1000 / 60 / 60 / 24)

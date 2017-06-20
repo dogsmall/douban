@@ -39,9 +39,8 @@ function comment_url(douban_id) {
         default: { doubanId: douban_id },
         url: `https://movie.douban.com/subject/${douban_id}/comments`
     }
-    // return {
-    //     default: { doubanId: '26235195' },
-    //     url: 'https://movie.douban.com/subject/26235195/comments'
+    // default: { doubanId: '26003812' },
+    // url: 'https://movie.douban.com/subject/26003812/comments?start=191&amp;limit=20&amp;sort=new_score&amp;status=P '
     // }
 }
 
