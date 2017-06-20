@@ -3,7 +3,8 @@ import { pick, omit } from "lodash"
 import { updateId, log, expandIds } from "./utils"
 import crawl from "../crawlers/comments"
 import { ObjectID } from "mongodb"
-let Films = global.filmMongo.collection('idatage_films')
+// let Films = global.filmMongo.collection('idatage_films')
+let FilmsFollows = global.mongo.collection('douban_follows')
 let FilmsComments = global.mongo.collection('douban_comments')
 
 
@@ -29,7 +30,7 @@ function today() {
 
 module.exports.redis = {
     async getIds() {
-        let films = await Films.find({ doubanId: { $exists: true }, isDeleted: false, showType: -1 }, { doubanId: 1, _id: 0 }).toArray()
+        let films = await FilmsFollows.find({ comments: { $$gt: 0 } }, { doubanId: 1, _id: 0 }).toArray()
         return films
     },
     saveRedis(films) {

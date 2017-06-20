@@ -44,7 +44,7 @@ epona.on('subject/{doubanId}/comments', {
                     comments: ret.comments,
                     next: {
                         // headers: { 'Upgrade-Insecure-Requests': "1", "Referer": `https://movie.douban.com/subject/${ret.doubanId}/comments` },
-                        default: { doubanId: ret.doubanId },
+                        default: { doubanId: ret.doubanId, commentType: "hot" },
                         url: `https://movie.douban.com/subject/${ret.doubanId}/comments${ret.nextPage} `
                     }
                 }

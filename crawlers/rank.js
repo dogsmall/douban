@@ -11,9 +11,10 @@ epona.on('https://movie.douban.com/subject/{doubanId}', {
     })
     .then(async function(ret) {
         // ret.created_at = new Date
+
+        ret.rank = parseFloat(ret.rank) == NaN ? 0 : parseFloat(ret.rank)
+        ret.rankCount = parseInt(ret.rankCount) == NaN ? 0 : parseInt(ret.rankCount)
         console.log('抓到的数据：', ret)
-        ret.rank = parseFloat(ret.rank)
-        ret.rankCount = parseInt(ret.rankCount)
         return ret
     })
 

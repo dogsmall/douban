@@ -36,7 +36,7 @@ function error(err) {
 
 function comment_url(douban_id) {
     return {
-        default: { doubanId: douban_id },
+        default: { doubanId: douban_id, commentType: "hot" },
         url: `https://movie.douban.com/subject/${douban_id}/comments`
     }
     // default: { doubanId: '26003812' },
