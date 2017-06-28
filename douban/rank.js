@@ -106,8 +106,15 @@ module.exports.redis = {
 
             }
         }
-        let rdoubanRank = rankFollows
-        let saved = await FilmsFollows.insertOne(rdoubanRank, { ordered: false })
-        return saved.result.ok == 1
+        // let rdoubanRank = rankFollows
+        // let saved = await FilmsFollows.insertOne(rdoubanRank, { ordered: false })
+        console.log("==========")
+        console.log(rankFollows)
+        let saved = await FilmsFollows.findOneAndUpdate({ doubanId: rankFollows.doubanId, crawled_at: rankFollows.crawled_at }, { $set: rankFollows }, {
+            upsert: true,
+            // returnNewDocument: true
+        })
+        console.log(saved.ok)
+        return saved.ok == 1
     }
 }
