@@ -69,27 +69,18 @@ module.exports.redis = {
     },
     async save(rankFollows) {
         rankFollows.crawled_at = today().getTime()
-        console.log("gsw")
-        // let s = await FilmsFollows.find({ doubanId: rankFollows.doubanId, crawled_at: { $lt: rankFollows.crawled_at } }).sort({ crawled_at: -1 }).limit(1).toArray().length
-        // console.log(s)
-        // console.log(rankFollows)
-        // let s = await FilmsFollows.find({ doubanId: rankFollows.doubanId, crawled_at: { $lt: rankFollows.crawled_at } }).sort({ crawled_at: -1 }).toArray()
+        console.log(rankFollows)
         let s = await FilmsFollows.find({ doubanId: rankFollows.doubanId, crawled_at: { $lt: rankFollows.crawled_at } }).sort({ crawled_at: -1 }).toArray()
         console.log(s.length > 0)
         if (s.length > 0) {
-            console.log("111")
-
             let lastObj = await FilmsFollows.find({ doubanId: rankFollows.doubanId }).sort({ crawled_at: -1 }).limit(1).toArray()
-
-            console.log(`以前的数组：${lastObj}`)
-            console.log(lastObj)
             let lastOne = lastObj[0]
             console.log(`上一个评价${lastOne}`)
             let timeRange = (rankFollows.crawled_at - lastOne.crawled_at) / 1000 / 60 / 60 / 24
             console.log(`日期相隔${timeRange}天`)
-            console.log(lastOne)            
+            console.log(rankFollows)
+
             if (timeRange > 1) {
-                console.log(rankFollows)
                 console.log(`需要补数据，数据缺失${timeRange - 1}`)
                 let rankRange = rankFollows.rank - lastOne.rank
                 console.log(rankRange)
@@ -117,7 +108,6 @@ module.exports.redis = {
         }
         let rdoubanRank = rankFollows
         let saved = await FilmsFollows.insertOne(rdoubanRank, { ordered: false })
-        console.log(saved.result.ok)
         return saved.result.ok == 1
     }
 }
