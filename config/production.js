@@ -11,12 +11,10 @@ export const redisOpts = {
     password: 'Abc123456'
 }
 
-// export const esOpts = {
-//     hosts: ["http://idatage:abc@123456@59.110.52.213/port/"]
-//         // , auth: 'idatage:abc@123456'
-//         ,
-//     requestTimeout: 300000,
-//     log: 'error'
-// }
+export const esOpts = {
+    hosts: ["http://127.0.0.1:9200"],
+    requestTimeout: 300000,
+    log: 'error'
+}
 export const mongoUrl = "mongodb://douban:joke123098@101.201.37.28:3717/douban"
 export const filmMongoUrl = "mongodb://normal:Joke123@ant09.idatage.com:27021/tarantula"
